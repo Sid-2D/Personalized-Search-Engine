@@ -1,18 +1,18 @@
-var display, request, searchTerm, apiKey = ''
+var display, searchRequest, searchTerm
 
 window.onload = function() {
     display = document.getElementById('display')
     searchTerm = document.getElementById('searchTerm')
-    request = new XMLHttpRequest()
-    request.addEventListener('load', requestSuccessful)
-    request.addEventListener('error', requestFailed)
+    searchRequest = new XMLHttpRequest()
+    searchRequest.addEventListener('load', searchRequestSuccessful)
+    searchRequest.addEventListener('error', searchRequestFailed)
 }
 
 function getSearchResults() {
 	var query = searchTerm.value
 	console.log('Sending request: ', query)
-	request.open('GET', `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=010033202905348580265:ocd5j7uwpc8&q=${query}`)
-	request.send()
+	searchRequest.open('GET', `/search/${query}`)
+	searchRequest.send()
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 1s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Fetching results...</h4>'
 }
 
@@ -40,20 +40,41 @@ function makeCard(cardTitle, cardLink, cardSnippet) {
 	return div
 }
 
-function requestSuccessful() {
+function searchRequestSuccessful() {
 	console.log('Success')
-	results = JSON.parse(request.response)
-	saveHistory()
-	display.innerText = ''
-		results.items.forEach(item => {
+	results = JSON.parse(searchRequest.response)
+	var history = saveHistory()
+	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
+	results.items.forEach(item => {
 		var card = makeCard(item.title, item.link, item.snippet)
 		display.appendChild(card)
 	})
+	// sendPersonalisationRequest(results, history);
 }
 
-function requestFailed() {
+function searchRequestFailed() {
 	console.log('Failed')
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">An error occured, try again.</h4>'
+}
+
+function sendPersonalisationRequest(results, history) {
+	var personalizeRequest = new XMLHttpRequest;
+	personalizeRequest.addEventListener('load', personalizeRequestSuccess)
+	personalizeRequest.addEventListener('error', personalizeRequestFailed)
+	personalizeRequest.open('POST', '/personalize')
+	personalizeRequest.setRequestHeader('Content-type', 'application/json')
+	personalizeRequest.send({
+		results,
+		history
+	})
+}
+
+function personalizeRequestSuccess() {
+
+}
+
+function personalizeRequestFailed() {
+
 }
 
 function saveHistory() {
@@ -63,4 +84,5 @@ function saveHistory() {
 	} 
 	history.push(searchTerm.value)
 	localStorage['history'] = JSON.stringify(history)
+	return history.join(' ')
 }
