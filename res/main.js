@@ -1,4 +1,4 @@
-var display, searchRequest, searchTerm
+var display, searchRequest, searchTerm, personalizeRequest
 
 window.onload = function() {
     display = document.getElementById('display')
@@ -42,14 +42,14 @@ function makeCard(cardTitle, cardLink, cardSnippet) {
 
 function searchRequestSuccessful() {
 	console.log('Success')
-	results = JSON.parse(searchRequest.response)
+	var results = JSON.parse(searchRequest.response)
 	var history = saveHistory()
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
 	results.items.forEach(item => {
 		var card = makeCard(item.title, item.link, item.snippet)
 		display.appendChild(card)
 	})
-	// sendPersonalisationRequest(results, history);
+	sendPersonalisationRequest(results, history)
 }
 
 function searchRequestFailed() {
@@ -58,11 +58,15 @@ function searchRequestFailed() {
 }
 
 function sendPersonalisationRequest(results, history) {
-	var personalizeRequest = new XMLHttpRequest;
+	personalizeRequest = new XMLHttpRequest;
 	personalizeRequest.addEventListener('load', personalizeRequestSuccess)
 	personalizeRequest.addEventListener('error', personalizeRequestFailed)
 	personalizeRequest.open('POST', '/personalize')
 	personalizeRequest.setRequestHeader('Content-type', 'application/json')
+	console.log({
+		results,
+		history
+	})
 	personalizeRequest.send({
 		results,
 		history
@@ -70,11 +74,19 @@ function sendPersonalisationRequest(results, history) {
 }
 
 function personalizeRequestSuccess() {
-
+	console.log('Success')
+	var results = JSON.parse(personalizeRequest.response)
+	console.log(results)
+	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalization done.</h4>'
+	results.results.items.forEach(item => {
+		var card = makeCard(item.title, item.link, item.snippet)
+		display.appendChild(card)
+	})
 }
 
 function personalizeRequestFailed() {
-
+	console.log('Failed')
+	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">An error occured, try again.</h4>'
 }
 
 function saveHistory() {
