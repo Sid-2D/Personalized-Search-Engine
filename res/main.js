@@ -67,10 +67,10 @@ function sendPersonalisationRequest(results, history) {
 		results,
 		history
 	})
-	personalizeRequest.send({
+	personalizeRequest.send(JSON.stringify({
 		results,
 		history
-	})
+	}))
 }
 
 function personalizeRequestSuccess() {
