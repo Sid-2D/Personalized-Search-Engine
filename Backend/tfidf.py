@@ -9,17 +9,26 @@ def filterResults(results):
 		# 	'title': item['title'],
 		# 	'snippet': item['snippet']
 		# })
+		# filter out dates from snippet here
 		arr.append(item['snippet'])
-	print arr
+	return arr
 
-def findSimiliarity(results, history):
+def findSimiliarity(results):
 	filteredResults = filterResults(results)
-	elements = [filteredResults, history]
-	# tfidf = TfidfVectorizer().fit_transform(elements)
-	# pairwise_similarity = tfidf * tfidf.T
+	filteredResults.insert(0, results['history'])
+	tfidf = TfidfVectorizer().fit_transform(filteredResults)
+	print len(filteredResults)
+	print '\n', tfidf
+	pairwise_similarity = tfidf * tfidf.T
+	print '\n', pairwise_similarity
+	i = 0
+	for item in filteredResults:
+		print '\n', i, item
+		i += 1
+	print '\n', pairwise_similarity[:, 0]
 
 if __name__ == '__main__':
 	fp = open('../personalizeData.json')
 	content = json.load(fp)
 	fp.close()
-	filterResults(content)
+	findSimiliarity(content)
