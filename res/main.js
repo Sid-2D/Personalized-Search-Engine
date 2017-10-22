@@ -41,19 +41,24 @@ function makeCard(cardTitle, cardLink, cardSnippet) {
 }
 
 function searchRequestSuccessful() {
-	console.log('Success')
-	var results = JSON.parse(searchRequest.response)
+	console.log('Search success')
 	var history = saveHistory()
+	var results = JSON.parse(searchRequest.response)
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
+	showOriginal()
+	sendPersonalisationRequest(results, history)
+}
+
+function showOriginal() {
+	var results = JSON.parse(searchRequest.response)
 	results.items.forEach(item => {
 		var card = makeCard(item.title, item.link, item.snippet)
 		display.appendChild(card)
 	})
-	sendPersonalisationRequest(results, history)
 }
 
 function searchRequestFailed() {
-	console.log('Failed')
+	console.log('Search failed')
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">An error occured, try again.</h4>'
 }
 
@@ -74,18 +79,21 @@ function sendPersonalisationRequest(results, history) {
 }
 
 function personalizeRequestSuccess() {
-	console.log('Success')
-	var results = JSON.parse(personalizeRequest.response)
-	console.log(results)
+	console.log('Personalize Success')
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalization done.</h4>'
-	results.results.items.forEach(item => {
+	showPersonalized()
+}
+
+function showPersonalized() {
+	var results = JSON.parse(personalizeRequest.response)
+	results.forEach(item => {
 		var card = makeCard(item.title, item.link, item.snippet)
 		display.appendChild(card)
 	})
 }
 
 function personalizeRequestFailed() {
-	console.log('Failed')
+	console.log('Personalize failed')
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">An error occured, try again.</h4>'
 }
 
