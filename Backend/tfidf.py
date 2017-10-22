@@ -18,33 +18,33 @@ def filterResults(results):
 	return arr
 
 def findSimiliarity(results):
+	results = json.loads(results)
 	filteredResults = filterResults(results)
 	filteredResults.insert(0, results['history'])
 	tfidf = TfidfVectorizer().fit_transform(filteredResults)
-	print len(filteredResults)
-	print '\n', tfidf
 	pairwise_similarity = tfidf * tfidf.T
-	print '\n', pairwise_similarity
 	i = 0
 	for item in filteredResults:
 		print '\n', i, item
 		i += 1
 	weights = pairwise_similarity[:, 0]
-	print '\n', weights
 	# Add weights to results
 	weightedList = []
+	del filteredResults[0]
 	for i in range(len(filteredResults)):
 		weightedList.append({
-			'result': filteredResults[i],
-			'weight': weights[i]
+			'snippet': filteredResults[i],
+			'weight': weights[i + 1, 0],
+			'title': results['results']['items'][i]['title'],
+			'link': results['results']['items'][i]['link']
 		})
 	# Sort the array w.r.t weights
-	# print sorted(weightedList, key=weights)
-	weightedList.sort()
-	print weightedList
+	weightedList.sort(key = lambda x: x['weight'], reverse = True)
+	return json.dumps(weightedList, indent = 2)
 
 if __name__ == '__main__':
 	fp = open('../personalizeData.json')
 	content = json.load(fp)
 	fp.close()
 	findSimiliarity(content)
+	print results['results']['items']
