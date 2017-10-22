@@ -26,6 +26,7 @@ def search(query):
 @app.route('/personalize', methods = ['POST'])
 def personalize():
 	#TODO: Use tf-idf here
-	return request.data
+	sortedList = tfidf.findSimiliarity(request.data)
+	return sortedList
 
 app.run(debug=True)
