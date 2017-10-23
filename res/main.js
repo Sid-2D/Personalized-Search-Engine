@@ -16,6 +16,19 @@ function getSearchResults() {
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 1s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Fetching results...</h4>'
 }
 
+function changeView() {
+	var viewBtn = document.getElementById('viewButton')
+	if (viewBtn.innerText == 'Original') {
+		display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Original Results</h4>'
+		showOriginal()
+		viewBtn.innerText = 'Personalized'
+	} else {
+		display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalized Results</h4>'
+		showPersonalized()
+		viewBtn.innerText = 'Original'
+	}
+}
+
 function makeCard(cardTitle, cardLink, cardSnippet) {
 	var div = document.createElement('div')
 	div.setAttribute('class', 'card')
@@ -82,6 +95,7 @@ function personalizeRequestSuccess() {
 	console.log('Personalize Success')
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalization done.</h4>'
 	showPersonalized()
+	document.getElementById('viewButton').setAttribute('style', '')
 }
 
 function showPersonalized() {
