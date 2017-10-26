@@ -56,6 +56,7 @@ function makeCard(cardTitle, cardLink, cardSnippet) {
 function searchRequestSuccessful() {
 	console.log('Search success')
 	var history = saveHistory()
+	profiles[0] = history
 	var results = JSON.parse(searchRequest.response)
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
 	showOriginal()
@@ -119,4 +120,14 @@ function saveHistory() {
 	history.push(searchTerm.value)
 	localStorage['history'] = JSON.stringify(history)
 	return history.join(' ')
+}
+
+var profiles = [], currentProfile
+function viewBtnClick(num) {
+	var btn = document.getElementById('viewButton' + num)
+	for (var i = 1; i <= 4; i++) {
+		document.getElementById('viewButton' + i).setAttribute('class', 'btn btn-danger')
+	}
+	btn.setAttribute('class', 'btn btn-success')
+	currentProfile = num
 }
