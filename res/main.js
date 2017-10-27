@@ -60,7 +60,7 @@ function searchRequestSuccessful() {
 	var results = JSON.parse(searchRequest.response)
 	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
 	showOriginal()
-	sendPersonalisationRequest(results, history)
+	sendPersonalisationRequest(results, profiles[currentProfile])
 }
 
 function showOriginal() {
@@ -122,7 +122,12 @@ function saveHistory() {
 	return history.join(' ')
 }
 
-var profiles = [], currentProfile
+var profiles = [
+	'',
+	'adele, lady gaga, music',
+	'',
+	''
+], currentProfile = 0
 function viewBtnClick(num) {
 	var btn = document.getElementById('viewButton' + num)
 	for (var i = 1; i <= 4; i++) {
