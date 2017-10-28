@@ -58,7 +58,6 @@ function searchRequestSuccessful() {
 	var history = saveHistory()
 	profiles[0] = history
 	var results = JSON.parse(searchRequest.response)
-	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
 	showOriginal()
 	sendPersonalisationRequest(results, profiles[currentProfile])
 }
@@ -77,6 +76,7 @@ function searchRequestFailed() {
 }
 
 function sendPersonalisationRequest(results, history) {
+	display.innerHTML = '<h4 style="color:#ccc;animation: fadeIn 4s; text-align: center; margin: 10px; font-family: \'Open Sans\';">Personalizing...</h4>'
 	personalizeRequest = new XMLHttpRequest;
 	personalizeRequest.addEventListener('load', personalizeRequestSuccess)
 	personalizeRequest.addEventListener('error', personalizeRequestFailed)
@@ -124,9 +124,9 @@ function saveHistory() {
 
 var profiles = [
 	'',
-	'adele, lady gaga, music',
-	'',
-	''
+	'adele, lady gaga, music, video, songs',
+	'subject, marks, result, research, papers, exams, university, college',
+	'salsa, music, dance, step, show, moves'
 ], currentProfile = 0
 function viewBtnClick(num) {
 	var btn = document.getElementById('viewButton' + num)
@@ -134,5 +134,6 @@ function viewBtnClick(num) {
 		document.getElementById('viewButton' + i).setAttribute('class', 'btn btn-danger')
 	}
 	btn.setAttribute('class', 'btn btn-success')
-	currentProfile = num
+	currentProfile = num - 1
+	sendPersonalisationRequest(JSON.parse(searchRequest.response), profiles[currentProfile])
 }
